@@ -69,7 +69,7 @@ export async function getOutgoingFriendReqs() {
         return response.data;
     }
     catch(error){
-        console.log("Error while getting user friends",error);
+        console.log("Error while getting outgoing friend requests",error);
         return null
     }
 }

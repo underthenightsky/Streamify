@@ -158,8 +158,8 @@ export async function getOutgoingFriendRequest(req, res) {
   try {
     // to find all friend requests we have sent that are still unanswered
     const userId = req.user.id;
-    const outGoingRequest = FriendRequest.find({
-      senderId: req.user.id,
+    const outGoingRequest = await FriendRequest.find({
+      senderId: userId,
       status: "pending",
     }).populate(
       "recipientId",

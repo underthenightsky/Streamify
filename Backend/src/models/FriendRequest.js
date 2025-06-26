@@ -9,7 +9,7 @@ const friendRequestSchema= mongoose.Schema({
         // Initially i had stored this data as int 
         //This is the better format 
     },
-    recipientsId:{
+    recipientId:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"User",
         required:true 
