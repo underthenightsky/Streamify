@@ -1,3 +1,4 @@
+import axios from "axios";
 import { axiosInstance } from "./axios";
 // we are using this axios instance to so send the data to all the necessary endpoints (api functions)
 
@@ -38,4 +39,57 @@ export async function getProfilePicLink(){
  
    console.log("from img gen api ",response)
     return response.toString();
+}
+
+export async function getUserFriends(){
+    // we dont need the userId of the individual because cause we can get it from auth/me
+    try{
+        const response = await axiosInstance.get("/user/friends")
+        return response.data;
+    }
+    catch(error){
+        console.log("Error while getting user friends",error);
+        return null
+    }
+}
+
+export async function getRecommendedUsers() {
+      try{
+        const response = await axiosInstance.get("/user")
+        return response.data;
+    }
+    catch(error){
+        console.log("Error while getting user friends",error);
+        return null
+    }
+}
+export async function getOutgoingFriendReqs() {
+      try{
+        const response = await axiosInstance.get("/user/outgoing-friend-requests")
+        return response.data;
+    }
+    catch(error){
+        console.log("Error while getting user friends",error);
+        return null
+    }
+}
+
+export async function sendFriendRequest(userId){
+    const response=await axios.post(`/user/friend-request/${userId}`);
+    return response.data;
+}
+
+export async function getFriendRequests() {
+  const response = await axiosInstance.get("/user/friend-requests");
+  return response.data;
+}
+
+export async function acceptFriendRequest(requestId) {
+  const response = await axiosInstance.put(`/user/friend-request/${requestId}/accept`);
+  return response.data;
+}
+
+export async function getStreamToken() {
+  const response = await axiosInstance.get("/chat/token");
+  return response.data;
 }

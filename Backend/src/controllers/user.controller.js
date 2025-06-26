@@ -3,7 +3,7 @@ import FriendRequest from "../models/FriendRequest.js"; // make sure to import f
 
 export async function getRecommendedUsers(req, res) {
   try {
-    const currentUserId = req.user._id;
+    const currentUserId = req.user.id;
     const currentUser = req.user;
     // here we are extracting data from the user field sent in the request we can alternatively await the data from the User model createrd in the models folder
 
@@ -28,9 +28,9 @@ export async function getRecommendedUsers(req, res) {
 
 export async function getMyFriends(req, res) {
   try {
-    const userId = req.user._id;
+    const userId = req.user.id;
     const user = await User.findById(userId)
-      .select(friends)
+      .select("friends")
       .populate(
         "friends",
         "fullName profilePic nativeLanguage learningLanguage"
@@ -48,7 +48,7 @@ export async function getMyFriends(req, res) {
 
 export async function sendFriendRequest(req, res) {
   try {
-    const userId = req.user._id;
+    const userId = req.user.id;
     const { id: recipientId } = req.params;
     // extract the recipiendId from the id field of the request params
 
@@ -162,7 +162,7 @@ export async function getOutgoingFriendRequest(req, res) {
       senderId: req.user.id,
       status: "pending",
     }).populate(
-      "recipient",
+      "recipientId",
       "fullName profilePic nativeLanguage learningLanguage"
     );
     res.status(200).json(outGoingRequest);
