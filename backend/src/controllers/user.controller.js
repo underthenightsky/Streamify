@@ -52,7 +52,7 @@ export async function sendFriendRequest(req, res) {
   try {
     const userId = req.user.id;
     const { id: recipientId } = req.params;
-    console.log(id,recipientId)
+   
     // extract the recipiendId from the id field of the request params
 
     // prevent sending friend request to self
@@ -72,13 +72,14 @@ export async function sendFriendRequest(req, res) {
       return res.status(400).json({ message: "Aready friends with recipient" });
     }
     // now we need to check if the user has already sent a request to the recipient
-    if (
-      FriendRequest.findOne({
+    const requestExists= await FriendRequest.findOne({
         $or: [
           { recipientId: recipientId, senderId: userId },
           { recipientId: userId, senderId: recipientId },
         ],
       })
+    if (
+      requestExists
     ) {
       return res.status(400).json({ message: "Already sent a friend request" });
       // the reason we checked if i a friend request exists between 1 and 2 and not just from 1 to 2 is to avoid the case where 1 and 2 are alreaddy friends but 2 clicks an earlier friend request from 1 , this may lead to double entries in the database
@@ -93,7 +94,7 @@ export async function sendFriendRequest(req, res) {
     console.log("error in sending friend request", error);
     return res
       .status(500)
-      .json({ message: "error wwhile creating friend request" });
+      .json({ message: "error while creating friend request" });
   }
 }
 export async function acceptfriendRequest(req, res) {
@@ -165,9 +166,9 @@ export async function getOutgoingFriendRequest(req, res) {
       senderId: userId,
       status: "pending",
     }).populate(
-      "recipientId",
-      "fullName profilePic nativeLanguage learningLanguage"
+      "recipientId","fullName profilePic nativeLanguage learningLanguage"
     );
+    console.log(outGoingRequest);
     res.status(200).json(outGoingRequest);
   } catch (error) {
     console.log("Error in getOutgoingFriendReqs controller", error.message);

@@ -11,7 +11,7 @@ import useAuthUser from '../hooks/useAuthUser.js';
 import { IoIosColorPalette } from "react-icons/io";
 import { LuMessageSquareDiff } from "react-icons/lu";
 import {useMutation, useQuery ,useQueryClient} from "@tanstack/react-query"
-import { getUserFriends,getRecommendedUsers,getOutgoingFriendReqs,sendFriendRequest } from '../lib/api.js';
+import { getUserFriends,getRecommendedUsers,getOutgoingFriendReqs,sendFriendRequest,logout } from '../lib/api.js';
 // import FriendCard, { getLanguageFlag } from "../components/FriendCard.jsx";
 // import NoFriendsFound from "../components/NoFriendsFound.jsx";
 import toast from 'react-hot-toast';
@@ -31,7 +31,7 @@ function HomePage() {
     queryKey:["users"],
     queryFn:getRecommendedUsers,
   });
-  console.log(recommendedUsers);
+  
   // get list of friend request we have sent that are unanswered
   const {data: outgoingFriendReqs}=useQuery({
     queryKey:['outgoingFriendReqs'],
@@ -47,7 +47,7 @@ function HomePage() {
                       background:"green"
                     }
                   });
-      queryClient.invalidateQueries({queryKey:['outgoingFriendReqs']})
+      // queryClient.invalidateQueries({queryKey:['outgoingFriendReqs']})
 
     },
      onError:(error)=>{
@@ -58,24 +58,20 @@ function HomePage() {
                     })
         }
   });
-  async function onFriendRequest(recipientId){
-    // function to pass the the data to the mutation function 
-    const res= await sendRequestMutation(recipientId);
-    console.log(res)
-    }
+
   
   // see the thing is that we need the userIDs of the people to whom we have sent friend requests to show their profile so we need to iterate through the userIds of the outgoingFriendReqs array and add the userIds to the set of outgoing reqs
   // also the thing is that as soon as we send a new friend request we are invalidating the outGoingFriendReqs query to allow us to refetch that data each that time the query get's refetched we need to update the set of users to whom we have sent outgoing friends reqs so to do that we use o useEffect to re-render the page once we send a friend request
- useEffect(()=>{
-  const outgoingIds= new Set();
-  if(outgoingFriendReqs && outgoingFriendReqs > 0){
-    outgoingFriendReqs.forEach((req)=>{outgoingIds.add(req.recipientId._id);
-  })
-    // update the state
-    setOutgoingRequestIds(outgoingIds);
-  
-  }
- },[outgoingFriendReqs]);
+//  useEffect(()=>{
+//   const outgoingIds= new Set();
+//   if(outgoingFriendReqs && outgoingFriendReqs > 0){
+//     outgoingFriendReqs.forEach((req)=>{outgoingIds.add(req.recipientId._id);
+//   })
+//     // update the state
+//     setOutgoingRequestIds(outgoingIds);
+//   console.log(outgoingRequestIds)
+//   }
+//  },[outgoingFriendReqs]);
 
 //  now what we have these varaibles we need to display them 
 
@@ -105,7 +101,7 @@ function HomePage() {
                    <img src={authUser.profilePic} 
                    className="rounded-full  w-[32px] min-w-[15px]" alt="P"/>
                    </Link>
-                   <Link to="/api/auth/logout"><IoIosLogOut size={30} /></Link>
+                   <Link to="/login" onClick={logout}><IoIosLogOut size={30} /></Link>
                  </div>
          
                </div>
@@ -208,7 +204,7 @@ function HomePage() {
                        <p> Native Language : {user.nativeLanguage} </p>
                       </div>
 
-                      <button className='bg-primary/50 rounded-md pr-1 pl-1 col-span-3 lg;col-span-1 place-self-center' onClick={()=>{onFriendRequest(user._id)}}> Friend Request </button>
+                      <button className='bg-primary/50 rounded-md pr-1 pl-1 col-span-3 lg;col-span-1 place-self-center' onClick={()=>{sendRequestMutation(user._id)}}> Friend Request </button>
                    
                 </div>
               )

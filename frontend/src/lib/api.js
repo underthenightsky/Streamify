@@ -1,4 +1,3 @@
-import axios from "axios";
 import { axiosInstance } from "./axios";
 // we are using this axios instance to so send the data to all the necessary endpoints (api functions)
 
@@ -75,8 +74,15 @@ export async function getOutgoingFriendReqs() {
 }
 
 export async function sendFriendRequest(userId){
-    const response=await axios.post(`/user/friend-request/${userId}`);
+    try{
+    const response=await axiosInstance.post(`/user/friend-request/${userId}`);
     return response.data;
+    }
+    catch(error){
+        console.log("Error while sending friend requests",error);
+        return null
+    }
+    
 }
 
 export async function getFriendRequests() {
