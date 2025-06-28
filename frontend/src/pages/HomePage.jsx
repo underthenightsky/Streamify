@@ -12,8 +12,9 @@ import { IoIosColorPalette } from "react-icons/io";
 import { LuMessageSquareDiff } from "react-icons/lu";
 import {useMutation, useQuery ,useQueryClient} from "@tanstack/react-query"
 import { getUserFriends,getRecommendedUsers,getOutgoingFriendReqs,sendFriendRequest } from '../lib/api.js';
-import FriendCard, { getLanguageFlag } from "../components/FriendCard.jsx";
-import NoFriendsFound from "../components/NoFriendsFound.jsx";
+// import FriendCard, { getLanguageFlag } from "../components/FriendCard.jsx";
+// import NoFriendsFound from "../components/NoFriendsFound.jsx";
+import toast from 'react-hot-toast';
 
 function HomePage() {
   const {authUser} = useAuthUser();
@@ -41,9 +42,28 @@ function HomePage() {
   const {mutate:sendRequestMutation,isPending}=useMutation({
     mutationFn:sendFriendRequest ,
     onSuccess:()=>{
+       toast("Success",{
+                    style:{
+                      background:"green"
+                    }
+                  });
       queryClient.invalidateQueries({queryKey:['outgoingFriendReqs']})
-    }
+
+    },
+     onError:(error)=>{
+            toast(`Error ${error}`,{
+                      style:{
+                        background:"red"
+                      }
+                    })
+        }
   });
+  async function onFriendRequest(recipientId){
+    // function to pass the the data to the mutation function 
+    const res= await sendRequestMutation(recipientId);
+    console.log(res)
+    }
+  
   // see the thing is that we need the userIDs of the people to whom we have sent friend requests to show their profile so we need to iterate through the userIds of the outgoingFriendReqs array and add the userIds to the set of outgoing reqs
   // also the thing is that as soon as we send a new friend request we are invalidating the outGoingFriendReqs query to allow us to refetch that data each that time the query get's refetched we need to update the set of users to whom we have sent outgoing friends reqs so to do that we use o useEffect to re-render the page once we send a friend request
  useEffect(()=>{
@@ -188,7 +208,7 @@ function HomePage() {
                        <p> Native Language : {user.nativeLanguage} </p>
                       </div>
 
-                      <button className='bg-primary/50 rounded-md pr-1 pl-1 col-span-3 lg;col-span-1 place-self-center'>Send Friend Request</button>
+                      <button className='bg-primary/50 rounded-md pr-1 pl-1 col-span-3 lg;col-span-1 place-self-center' onClick={()=>{onFriendRequest(user._id)}}> Friend Request </button>
                    
                 </div>
               )

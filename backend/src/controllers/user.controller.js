@@ -52,6 +52,7 @@ export async function sendFriendRequest(req, res) {
   try {
     const userId = req.user.id;
     const { id: recipientId } = req.params;
+    console.log(id,recipientId)
     // extract the recipiendId from the id field of the request params
 
     // prevent sending friend request to self
