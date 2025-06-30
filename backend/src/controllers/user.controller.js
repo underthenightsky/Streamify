@@ -97,6 +97,7 @@ export async function sendFriendRequest(req, res) {
       .json({ message: "error while creating friend request" });
   }
 }
+
 export async function acceptfriendRequest(req, res) {
   try {
     const { id: requestId } = req.params;
@@ -105,18 +106,16 @@ export async function acceptfriendRequest(req, res) {
     if (!friendRequestObject) {
       return res.status(404).json({ message: "Friend request not found" });
     }
-    // then we check if the recipient and sender are ccidentally the same
-    if (friendRequestObject.senderId === friendRequestObject.recipientId) {
-      return res
-        .status(404)
-        .json({ message: "Recipient and sender are the same" });
-    }
+  
     // to check if the user accidentally go link for a random friend request not meant for them
     if (req.user.id !== friendRequestObject.recipientId.toString()) {
       return res
         .status(403)
         .json({ message: "This Friend request is not for you " });
     }
+    // set satus of friend request to accepted
+    friendRequestObject.status ="accepted";
+    friendRequestObject.save();
     // now that all check are present add the sender id to the recievers frined list and vice versa
     await User.findByIdAndUpdate(friendRequestObject.recipientId, {
       $addToSet: { friends: friendRequestObject.senderId },

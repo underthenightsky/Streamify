@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { acceptFriendRequest, getFriendRequests,getOutgoingFriendReqs } from "../lib/api";
 import { BellIcon, ClockIcon, MessageSquareIcon, UserCheckIcon } from "lucide-react";
 import NoNotificationsFound from "../components/NoNotificationsFound";
+import toast from 'react-hot-toast';
 
 const NotificationsPage = () => {
   const queryClient = useQueryClient();
@@ -19,9 +20,23 @@ const NotificationsPage = () => {
   const { mutate: acceptRequestMutation, isPending } = useMutation({
     mutationFn: acceptFriendRequest,
     onSuccess: () => {
+      console.log("accept request button works")
       queryClient.invalidateQueries({ queryKey: ["friendRequests"] });
       queryClient.invalidateQueries({ queryKey: ["friends"] });
+      toast("Success",{
+                    style:{
+                      background:"green"
+                    }
+                  });
+      // queryClie
     },
+     onError:(error)=>{
+            toast(`Error ${error}`,{
+                      style:{
+                        background:"red"
+                      }
+                    })
+        }
   });
 
   const incomingRequests = friendRequests?.incomingReqs || [];
@@ -56,16 +71,16 @@ const NotificationsPage = () => {
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
                             <div className="avatar w-14 h-14 rounded-full bg-base-300">
-                              <img src={request.sender.profilePic} alt={request.sender.fullName} />
+                              <img src={request.senderId.profilePic} alt={request.senderId.fullName} />
                             </div>
                             <div>
-                              <h3 className="font-semibold">{request.sender.fullName}</h3>
+                              <h3 className="font-semibold">{request.senderId.fullName}</h3>
                               <div className="flex flex-wrap gap-1.5 mt-1">
                                 <span className="badge badge-secondary badge-sm">
-                                  Native: {request.sender.nativeLanguage}
+                                  Native: {request.senderId.nativeLanguage}
                                 </span>
                                 <span className="badge badge-outline badge-sm">
-                                  Learning: {request.sender.learningLanguage}
+                                  Learning: {request.senderId.learningLanguage}
                                 </span>
                               </div>
                             </div>
@@ -101,14 +116,14 @@ const NotificationsPage = () => {
                         <div className="flex items-start gap-3">
                           <div className="avatar mt-1 size-10 rounded-full">
                             <img
-                              src={notification.recipient.profilePic}
-                              alt={notification.recipient.fullName}
+                              src={notification.recipientId.profilePic}
+                              alt={notification.recipientId.fullName}
                             />
                           </div>
                           <div className="flex-1">
-                            <h3 className="font-semibold">{notification.recipient.fullName}</h3>
+                            <h3 className="font-semibold">{notification.recipientId.fullName}</h3>
                             <p className="text-sm my-1">
-                              {notification.recipient.fullName} accepted your friend request
+                              {notification.recipientId.fullName} accepted your friend request
                             </p>
                             <p className="text-xs flex items-center opacity-70">
                               <ClockIcon className="h-3 w-3 mr-1" />

@@ -145,19 +145,19 @@ function HomePage() {
       </p>
     </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <div className="grid  grid-cols-subgrid col-span-3 lg:col-span-2  gap-4 row-span-3 grid-rows-subgrid">
             {friends.map((friend) => (
-             <div key={friend._id} className='col-span-3 lg:col-span-1 row-span-3  grid  grid-cols-subgrid grid-rows-subgrid  bg-neutral px-2 rounded-md justify-items-center pb-1 pt-1'>
+             <div key={friend._id} className='col-span-3 lg:col-span-2 row-span-3  grid  grid-cols-subgrid grid-rows-subgrid  bg-neutral px-2 rounded-md justify-items-center pb-1 pt-1'>
                     
-                      <img src={friend.profilePic} alt={friend.fullName} className='size-20 rounded-full row-span-1 col-span-3  lg:col-span-1 place-self-center ' />
+                      <img src={friend.profilePic} alt={friend.fullName} className='size-20 rounded-full row-span-1 col-span-3  lg:col-span-2 place-self-center ' />
                       
-                      <div className='row-span-1 col-span-3 lg:col-span-1 row-start-11 justify-items-center'>
+                      <div className='row-span-1 col-span-3 lg:col-span-2 row-start-11 justify-items-center'>
                       <p className=' '>{friend.fullName}</p>
                        <p>Learning Language : {friend.learningLanguage}</p> 
                        <p> Native Language : {friend.nativeLanguage} </p>
                       </div>
 
-                      <Link to={`/chat/${friend._id}`} className="btn btn-outline w-full">
+                      <Link to={`/chat/${friend._id}`} className="bg-primary/50 btn col-span-3 place-self-center">
           Message
         </Link>
                    
@@ -168,7 +168,7 @@ function HomePage() {
 
       </div>
 {/* recommened users header */}
-      <div className='grid grid-rows-subgrid grid-cols-subgrid row-span-1 col-span-9 items-center'>
+      <div className='grid grid-rows-subgrid grid-cols-subgrid row-span-1 col-span-9 items-center pt-1'>
         <h2 className="text-2xl sm:text-3xl row-span-1 col-span-9 font-bold self-start tracking-tight">Meet New Learners</h2>
                 <p className="opacity-70 row-span-1 col-span-9 row-start-7">
                   Discover perfect language exchange partners based on your profile
@@ -183,7 +183,7 @@ function HomePage() {
             </div>
           ):
           recommendedUsers.length === 0 ? (
-            <div className="grid grid-rows-subgrid grid-cols-subgridpy-12 text-center col-span-9 row-span-1">
+            <div className="grid grid-rows-subgrid grid-cols-subgrid py-12 text-center col-span-9 row-span-1">
               <h3 className="font-semibold text-lg mb-2 self-start">No recommendations available</h3>
               <p className="text-base-content opacity-70 self-end">
                 Check back later for new language partners!
@@ -204,7 +204,7 @@ function HomePage() {
                        <p> Native Language : {user.nativeLanguage} </p>
                       </div>
 
-                      <button className='bg-primary/50 rounded-md pr-1 pl-1 col-span-3 lg;col-span-1 place-self-center' onClick={()=>{sendRequestMutation(user._id)}}> Friend Request </button>
+                      <button className='bg-primary/50 btn col-span-3 place-self-center ' onClick={()=>{sendRequestMutation(user._id)}}> Friend Request </button>
                    
                 </div>
               )

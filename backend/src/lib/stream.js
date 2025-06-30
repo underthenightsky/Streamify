@@ -11,6 +11,7 @@ const streamClient = StreamChat.getInstance(apiKey,apiSecret);
 
 export async function  upsertStreamUser (userData){
     try{
+        // as soon as a user signs in we create a user with that userId(from mongo) and store them in the db
         await streamClient.upsertUsers([userData]);
         return userData;
     }

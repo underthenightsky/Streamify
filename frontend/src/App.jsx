@@ -35,8 +35,16 @@ const App=()=>{
         />
         <Route path="/onboarding" element={!isOnboarded?<OnboardingPage/>:<Navigate to= "/"/> } />
         <Route path="/notifications" element={<NotificationsPage/>} />
-        <Route path="/call" element={<CallPage/>} />
-        <Route path="/chat" element={<ChatPage/>} />
+        <Route path="/call/:id" element={isAuthenticated && isOnboarded ? (
+             <CallPage />             
+            ) : (
+              <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
+            )}/>
+        <Route path="/chat/:id" element={isAuthenticated && isOnboarded ? (
+             <ChatPage />             
+            ) : (
+              <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
+            )} />
         </Routes>
         <Toaster />
       </div> 
